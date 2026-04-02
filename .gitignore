@@ -1,0 +1,32 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+bin/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# 202260327 - .gitignore
+
+bin/
+obj/
+
+# Build artifacts
+[Bb]in/
+[Oo]bj/
+
+# User-specific files
+.vs/
+*.user
+*.suo
+
+# Rider / JetBrains
+.idea/
+
+# VS Code local settings
+.vscode/
+
