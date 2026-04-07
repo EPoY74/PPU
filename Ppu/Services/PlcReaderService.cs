@@ -14,7 +14,7 @@ public sealed class PlcReaderService : IPlcReader
 {
     private readonly PlcReaderOptions _options;
     private readonly ILogger _logger;
-    private string _plcEndpoint;
+    private string _plcEndpoint = "";
 
 
     public PlcReaderService(
@@ -25,7 +25,7 @@ public sealed class PlcReaderService : IPlcReader
         _logger = logger;
     }
 
-    public async Task<RawReadResult> RawReadAsync(CanсelationToken cancellationToken)
+    public async Task<RawReadResult> RawReadAsync(CancellationToken cancellationToken)
     {
         _plcEndpoint = _options.Host + ":" + _options.Port;
 
@@ -34,17 +34,32 @@ public sealed class PlcReaderService : IPlcReader
         try
         {
             client.Connect(_plcEndpoint, ModbusEndianness.BigEndian); // LittleEndian        
-            var registers = client.ReadHoldingRegisters<ushort>(
+            var readRegisters = client.ReadHoldingRegisters<ushort>(
                 _options.UnitId,
                 _options.StartAddress,
                 _options.RegisterCount);
             await Task.Yield();
             stopwatch.Stop();
+            return new RawReadResult
+            {
+                TimestampUtc = DateTimeOffset.UtcNow,
+                IsSuccess = true,
+                Registers = readRegisters.ToArray(),
+                DurationsMs = (int)stopwatch.ElapsedMilliseconds
+
+            };
         }
         catch (Exception ex)
         {
-            _plcEndpoint(
-                )
+            stopwatch.Stop();
+            return new RawReadResult
+            {
+                TimestampUtc = DateTimeOffset.UtcNow,
+                IsSuccess = false,
+                ErrorMessage = ex.Message,
+                DurationsMs = (int)stopwatch.ElapsedMilliseconds
+
+            };
         }
 
     }
