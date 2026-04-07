@@ -4,7 +4,7 @@ namespace Ppu.Config;
 
 public sealed class PlcReaderOptions
 {
-    public string Host { get; init; } = "127.0.0.1",
+    public string Host { get; init; } = "127.0.0.1";
     public int Port { get; init; } = 502;
     public byte UnitId { get; init; } = 1;
     public ModbusFunctionCode FunctionCode { get; init; } = ModbusFunctionCode.ReadHoldingRegisters;
