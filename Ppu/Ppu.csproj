@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="FluentModbus" Version="5.3.2" />
+  </ItemGroup>
+
 </Project>
