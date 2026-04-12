@@ -36,8 +36,9 @@ public sealed class  PollingWorker : BackgroundService
                 if (result.IsSuccess)
                 {
                     _logger.LogInformation(
-                            "Read succsessfull at {TimestampUtc}, duration: {DurationMs}ms, Registers: {Registers}",
+                            "Read succsessfull at {TimestampUtc}, FC:{FunctionCode}, duration: {DurationMs}ms, Registers: {Registers}",
                             result.TimestampUtc,
+                            (int)_options.FunctionCode,
                             result.DurationsMs,
                             string.Join(", ", result.Registers)
                     );

@@ -34,17 +34,36 @@ public sealed class PlcReaderService : IPlcReader
         try
         {
             client.Connect(_plcEndpoint, ModbusEndianness.BigEndian); // LittleEndian        
-            var readRegisters = client.ReadHoldingRegisters<ushort>(
-                _options.UnitId,
-                _options.StartAddress,
-                _options.RegisterCount);
+            
+            var readRegisters  = _options.FunctionCode switch
+            {
+               Ppu.Domain.ModbusFunctionCode.ReadHoldingRegisters => 
+                   client.ReadHoldingRegisters<ushort>(
+                   _options.UnitId,
+                   _options.StartAddress,
+                   _options.RegisterCount),
+
+               Ppu.Domain.ModbusFunctionCode.ReadInputRegisters =>
+                   client.ReadInputRegisters<ushort>(
+                   _options.UnitId,
+                   _options.StartAddress,
+                   _options.RegisterCount),
+               
+                _ => throw new NotSupportedException(
+                    $"FunctionCode '{_options.FunctionCode}' is not supported. Supported codes: FC03, FC04.")
+            };
+
+
+                var _registers = readRegisters.ToArray();
+                
+               
             await Task.Yield();
             stopwatch.Stop();
             return new RawReadResult
             {
                 TimestampUtc = DateTimeOffset.UtcNow,
                 IsSuccess = true,
-                Registers = readRegisters.ToArray(),
+                Registers = _registers,
                 DurationsMs = (int)stopwatch.ElapsedMilliseconds
 
             };
