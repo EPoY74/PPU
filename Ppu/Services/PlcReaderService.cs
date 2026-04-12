@@ -63,6 +63,7 @@ public sealed class PlcReaderService : IPlcReader
             {
                 TimestampUtc = DateTimeOffset.UtcNow,
                 IsSuccess = true,
+                FunctionCode = (int)_options.FunctionCode,
                 Registers = _registers,
                 DurationsMs = (int)stopwatch.ElapsedMilliseconds
 
@@ -76,6 +77,7 @@ public sealed class PlcReaderService : IPlcReader
                 TimestampUtc = DateTimeOffset.UtcNow,
                 IsSuccess = false,
                 ErrorMessage = ex.Message,
+                FunctionCode = (int)_options.FunctionCode,
                 DurationsMs = (int)stopwatch.ElapsedMilliseconds
 
             };
