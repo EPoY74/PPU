@@ -15,6 +15,19 @@ builder.Services.AddHostedService<PollingWorker>();
 
 var app = builder.Build();
 
+app.MapGet("/", () => Results.Ok(new
+{
+    application = "PPU",
+    version = "0.1.1",
+    status = "running",
+    description = "Modbus TCP PLC polling utility",
+    endpoints = new
+    {
+        health = "/health",
+        lastRead = "/last-read"
+    }
+}));
+
 app.MapGet("/health", () => Results.Ok(new
 {
     application = "PPU",
