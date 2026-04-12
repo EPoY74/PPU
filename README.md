@@ -71,8 +71,13 @@ dotnet run
 
 После запуска:
 
-* http://localhost:5000/health
-* http://localhost:5000/last-read
+* https://localhost:7237/health;
+* https://localhost:7237/last-read;
+
+или
+
+* http://localhost:5085/health";
+* http://localhost:5085/last-read";
 
 ---
 
@@ -83,7 +88,7 @@ dotnet run
 ```json
 {
   "PlcReader": {
-    "Host": "10.0.6.10",
+    "Host": "10.0.6.10", 
     "Port": 502,
     "UnitId": 1,
     "FunctionCode": 3,
