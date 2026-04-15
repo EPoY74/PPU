@@ -30,3 +30,5 @@ obj/
 # VS Code local settings
 .vscode/
 
+
+.fake
