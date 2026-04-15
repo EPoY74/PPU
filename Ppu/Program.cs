@@ -1,5 +1,6 @@
 using Ppu.Config;
 using Ppu.Domain;
+using Ppu.Dtos;
 using Ppu.Services;
 
 
@@ -14,19 +15,18 @@ builder.Services.AddHostedService<PollingWorker>();
 
 
 var app = builder.Build();
+var rootResponse = new RootResponseDto(
+    Application: "PPU",
+    Version: "0.1.1",
+    Status: "Running",
+    Description: "Simple modbus TCP PLC polling utility with HTTP API.",
+    Endpoints: new EndpointLinksDto(
+        Health: "/health",
+        LastRead: "/last-read"
+    )
+);
 
-app.MapGet("/", () => Results.Ok(new
-{
-    application = "PPU",
-    version = "0.1.1",
-    status = "running",
-    description = "Modbus TCP PLC polling utility",
-    endpoints = new
-    {
-        health = "/health",
-        lastRead = "/last-read"
-    }
-}));
+app.MapGet("/", () => Results.Ok(rootResponse));
 
 app.MapGet("/health", () => Results.Ok(new
 {
