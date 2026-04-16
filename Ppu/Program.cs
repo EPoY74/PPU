@@ -14,18 +14,22 @@ builder.Services.AddHostedService<PollingWorker>();
 
 
 var app = builder.Build();
-var rootResponse = new RootResponseDto(
-    Application: "PPU",
-    Version: "0.1.1",
-    Status: "Running",
-    Description: "Simple modbus TCP PLC polling utility with HTTP API.",
-    Endpoints: new EndpointLinksDto(
-        Health: "/health",
-        LastRead: "/last-read"
-    )
-);
 
-app.MapGet("/", () => Results.Ok(rootResponse));
+
+app.MapGet("/", static () =>
+{
+    var rootResponse = new RootResponseDto(
+        Application: "PPU",
+        Version: "0.1.1",
+        Status: "Running",
+        Description: "Simple modbus TCP PLC polling utility with HTTP API.",
+        Endpoints: new EndpointLinksDto(
+            Health: "/health",
+            LastRead: "/last-read"
+        )
+    );
+    return Results.Ok(rootResponse);
+});
 
 app.MapGet("/health", () =>
 {
@@ -33,6 +37,7 @@ app.MapGet("/health", () =>
         "PPU", 
         "ok", 
         DateTimeOffset.UtcNow);
+    
     return Results.Ok(dto);
 });
 app.MapGet("/last-read", (LastReadStore store) =>
