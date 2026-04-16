@@ -1,5 +1,4 @@
 using Ppu.Config;
-using Ppu.Domain;
 using Ppu.Dtos;
 using Ppu.Services;
 
@@ -28,13 +27,14 @@ var rootResponse = new RootResponseDto(
 
 app.MapGet("/", () => Results.Ok(rootResponse));
 
-app.MapGet("/health", () => Results.Ok(new
+app.MapGet("/health", () =>
 {
-    application = "PPU",
-    status = "ok",
-    utc = DateTimeOffset.UtcNow
-}));
-
+    var dto = new HealthResponseDto(
+        "PPU", 
+        "ok", 
+        DateTimeOffset.UtcNow);
+    return Results.Ok(dto);
+});
 app.MapGet("/last-read", (LastReadStore store) =>
 {
     var result = store.Get();

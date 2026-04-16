@@ -1,6 +1,8 @@
 ﻿namespace Ppu.Dtos
 {
-    public class HealthResponseDto
-    {
-    }
+    public sealed record HealthResponseDto(
+        string Application,
+        string Status,
+        DateTimeOffset Utc
+    );
 }
