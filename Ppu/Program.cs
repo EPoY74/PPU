@@ -43,22 +43,18 @@ app.MapGet("/health", () =>
 app.MapGet("/last-read", (LastReadStore store) =>
 {
     var result = store.Get();
-    if (result is not null)
+    if (result is null)
     {
-        var outResult = new LastReadResponseDto(
-            result.TimestampUtc,
-            result.IsSuccess,
-            result.ErrorMessage,
-            result.FunctionCode,
-            result.Registers,
-            result.DurationsMs
-        );
+        return Results.NotFound(new DataReadErrorDto("No read yet."));
     }
-    
-
-    return result is null
-        ? Results.NotFound(new DataReadErrorDto("No read yet."))
-        : Results.Ok(result);
+    return Results.Ok(new LastReadResponseDto(
+        result.TimestampUtc,
+        result.IsSuccess,
+        result.ErrorMessage,
+        result.FunctionCode,
+        result.Registers,
+        result.DurationsMs
+    ));
 });
 
 
