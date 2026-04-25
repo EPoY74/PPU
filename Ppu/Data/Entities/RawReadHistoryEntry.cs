@@ -11,6 +11,6 @@ public sealed class RawReadHistoryEntry
     public ushort StartAddress { get; set; }
     public ushort RegisterCouunt { get; set; }
     public ushort StopAddress { get; set; }
-    public string RegisterJson { get; set; } = "[]";
+    public string RegistersJson { get; set; } = "[]";
     public int Duration { get; set; }
 }
