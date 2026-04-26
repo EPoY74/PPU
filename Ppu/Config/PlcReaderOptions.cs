@@ -10,6 +10,6 @@ public sealed class PlcReaderOptions
     public ModbusFunctionCode FunctionCode { get; init; } = ModbusFunctionCode.ReadHoldingRegisters;
     public ushort StartAddress { get; init; } = 0;
     public ushort RegisterCount { get; init; } = 2;
-    public int PollIntervalSecond { get; init; } = 5;
+    public int PollIntervalSeconds { get; init; } = 5;
 
 }
