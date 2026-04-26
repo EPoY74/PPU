@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Sqlite;
 using Ppu.Config;
 using Ppu.Data;
 using Ppu.Dtos;
@@ -18,7 +17,7 @@ builder.Services.AddDbContext<PpuDbContext>(
 
 builder.Services.AddScoped<IRawReadReadHistoryWriter, RawReadHistoryWriter>();
 
-builder.Services.AddSingleton <AppRunContext>();
+builder.Services.AddSingleton<AppRunContext>();
 builder.Services.AddSingleton<LastReadStore>();
 builder.Services.AddSingleton<IPlcReader, PlcReaderService>();
 
