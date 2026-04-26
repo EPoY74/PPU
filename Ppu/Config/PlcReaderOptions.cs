@@ -5,6 +5,7 @@ namespace Ppu.Config;
 
 public sealed class PlcReaderOptions
 {
+    [Required]
     public string Host { get; init; } = "127.0.0.1";
     [Range(1,65535)]
     public int Port { get; init; } = 502;
