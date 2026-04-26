@@ -30,5 +30,11 @@ obj/
 # VS Code local settings
 .vscode/
 
-
 .fake
+
+.dotnet/
+**/.dotnet/
+*.nupkg
+*.nupkg.metadata
+packages/
+**/packages/
