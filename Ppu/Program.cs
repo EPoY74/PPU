@@ -1,4 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Sqlite;
 using Ppu.Config;
+using Ppu.Data;
 using Ppu.Dtos;
 using Ppu.Services;
 
@@ -20,6 +23,9 @@ builder.Services.AddOpenApi("v1", options =>
     });
 });
 
+builder.Services.AddDbContext<PpuDbContext>(
+    options => options.UseSqlite(builder.Configuration.GetConnectionString("PpuDb")));
+builder.Services.AddSingleton <AppRunContext>();
 builder.Services.AddSingleton<LastReadStore>();
 builder.Services.AddSingleton<IPlcReader, PlcReaderService>();
 builder.Services.AddHostedService<PollingWorker>();
