@@ -27,6 +27,7 @@ builder.Services.AddOpenApi("v1", options =>
 
 builder.Services.AddDbContext<PpuDbContext>(
     options => options.UseSqlite(builder.Configuration.GetConnectionString("PpuDb")));
+builder.Services.AddScoped<IRawReadReadHistoryWriter, RawReadHistoryWriter>();
 builder.Services.AddSingleton <AppRunContext>();
 builder.Services.AddSingleton<LastReadStore>();
 builder.Services.AddSingleton<IPlcReader, PlcReaderService>();
