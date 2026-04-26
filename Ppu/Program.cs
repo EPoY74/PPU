@@ -52,6 +52,7 @@ app.MapGet("/", static () =>
 })
 .WithSummary("Get application info")
 .WithDescription("Returns basic information about the PPU service and available endpoints.")
+// ReSharper disable once RedundantArgumentDefaultValue
 .Produces<RootResponseDto>(StatusCodes.Status200OK);
 
 app.MapGet("/health", () =>
@@ -65,6 +66,7 @@ app.MapGet("/health", () =>
 })
 .WithSummary("Get service health status")
 .WithDescription("Returns a simple health response for the PPU API.")
+// ReSharper disable once RedundantArgumentDefaultValue
 .Produces<HealthResponseDto>(StatusCodes.Status200OK);
 
 
@@ -86,7 +88,8 @@ app.MapGet("/last-read", (LastReadStore store) =>
 })
 .WithSummary("Get last PLC read result")
 .WithDescription("Returns the latest read result stored in memory.")
-.Produces<LastReadResponseDto>(StatusCodes.Status200OK)
+// ReSharper disable once RedundantArgumentDefaultValue
+.Produces<LastReadResponseDto>(StatusCodes.Status200OK) 
 .Produces<DataReadErrorDto>(StatusCodes.Status404NotFound);
 
 
