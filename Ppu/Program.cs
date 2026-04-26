@@ -13,6 +13,17 @@ builder.Services.AddOptions<PlcReaderOptions>()
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
+builder.Services.AddDbContext<PpuDbContext>(
+    options => options.UseSqlite(builder.Configuration.GetConnectionString("PpuDb")));
+
+builder.Services.AddScoped<IRawReadReadHistoryWriter, RawReadHistoryWriter>();
+
+builder.Services.AddSingleton <AppRunContext>();
+builder.Services.AddSingleton<LastReadStore>();
+builder.Services.AddSingleton<IPlcReader, PlcReaderService>();
+
+builder.Services.AddHostedService<PollingWorker>();
+
 builder.Services.AddOpenApi("v1", options =>
 {
     options.AddDocumentTransformer((document, context, cancellationToken) =>
@@ -24,15 +35,6 @@ builder.Services.AddOpenApi("v1", options =>
         return Task.CompletedTask;
     });
 });
-
-builder.Services.AddDbContext<PpuDbContext>(
-    options => options.UseSqlite(builder.Configuration.GetConnectionString("PpuDb")));
-builder.Services.AddScoped<IRawReadReadHistoryWriter, RawReadHistoryWriter>();
-builder.Services.AddSingleton <AppRunContext>();
-builder.Services.AddSingleton<LastReadStore>();
-builder.Services.AddSingleton<IPlcReader, PlcReaderService>();
-builder.Services.AddHostedService<PollingWorker>();
-
 
 var app = builder.Build();
 app.MapOpenApi();
