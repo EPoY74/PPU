@@ -8,8 +8,10 @@ using Ppu.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<PlcReaderOptions>(
-    builder.Configuration.GetSection("PlcReader"));
+builder.Services.AddOptions<PlcReaderOptions>()
+    .Bind(builder.Configuration.GetSection("PlcReader"))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 
 builder.Services.AddOpenApi("v1", options =>
 {
