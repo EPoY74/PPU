@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Net.Sockets;
 
 using Microsoft.Extensions.Options;
 
@@ -13,62 +14,108 @@ namespace Ppu.Services;
 public sealed class PlcReaderService : IPlcReader
 {
     private readonly PlcReaderOptions _options;
-    private readonly ILogger _logger;
-    private string _plcEndpoint = "";
-
 
     public PlcReaderService(
-        IOptions<PlcReaderOptions> options,
-        ILogger<PlcReaderService> logger)
+        IOptions<PlcReaderOptions> options)
     {
         _options = options.Value;
-        _logger = logger;
     }
 
     public async Task<RawReadResult> RawReadAsync(CancellationToken cancellationToken)
     {
-        _plcEndpoint = _options.Host + ":" + _options.Port;
 
         using var client = new ModbusTcpClient();
+        using var tcpClient = new TcpClient();
+        using var connectCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        connectCts.CancelAfter(_options.ConnectTimeoutMilliseconds);
+        using var readCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        readCts.CancelAfter(_options.ReadTimeoutMilliseconds);
         var stopwatch = Stopwatch.StartNew();
         try
         {
-            client.Connect(_plcEndpoint, ModbusEndianness.BigEndian); // LittleEndian        
-            
-            var readRegisters  = _options.FunctionCode switch
-            {
-               Ppu.Domain.ModbusFunctionCode.ReadHoldingRegisters => 
-                   client.ReadHoldingRegisters<ushort>(
-                   _options.UnitId,
-                   _options.StartAddress,
-                   _options.RegisterCount),
+            await tcpClient.ConnectAsync(_options.Host, _options.Port, connectCts.Token);
+            client.Initialize(tcpClient, ModbusEndianness.BigEndian);
 
-               Ppu.Domain.ModbusFunctionCode.ReadInputRegisters =>
-                   client.ReadInputRegisters<ushort>(
-                   _options.UnitId,
-                   _options.StartAddress,
-                   _options.RegisterCount),
-               
+            var readRegisters = _options.FunctionCode switch
+            {
+                Domain.ModbusFunctionCode.ReadHoldingRegisters =>
+                    await client.ReadHoldingRegistersAsync<ushort>(
+                        _options.UnitId,
+                        _options.StartAddress,
+                        _options.RegisterCount,
+                        readCts.Token),
+
+                Domain.ModbusFunctionCode.ReadInputRegisters =>
+                    await client.ReadInputRegistersAsync<ushort>(
+                        _options.UnitId,
+                        _options.StartAddress,
+                        _options.RegisterCount,
+                        readCts.Token),
+
                 _ => throw new NotSupportedException(
                     $"FunctionCode '{_options.FunctionCode}' is not supported. Supported codes: FC03, FC04.")
             };
-
-
-                var _registers = readRegisters.ToArray();
-                
-               
-            await Task.Yield();
             stopwatch.Stop();
             return new RawReadResult
             {
                 TimestampUtc = DateTimeOffset.UtcNow,
                 IsSuccess = true,
+                ErrorMessage = null,
+                Registers = readRegisters.ToArray(),
                 FunctionCode = (int)_options.FunctionCode,
-                Registers = _registers,
                 DurationsMs = (int)stopwatch.ElapsedMilliseconds
 
             };
+
+            
         }
+        catch (OperationCanceledException)
+        {
+            if (cancellationToken.IsCancellationRequested)
+                throw;
+
+            if (connectCts.IsCancellationRequested)
+            {
+                stopwatch.Stop();
+                var connectionTimeout = _options.ConnectTimeoutMilliseconds;
+
+                return new RawReadResult
+                {
+                    TimestampUtc = DateTimeOffset.UtcNow,
+                    IsSuccess = false,
+                    ErrorMessage = $"Connection operation timed out after {connectionTimeout} milliseconds",
+                    FunctionCode = (int)_options.FunctionCode,
+                    DurationsMs = (int)stopwatch.ElapsedMilliseconds
+                };
+            }
+            
+            if (readCts.IsCancellationRequested)
+            {
+                stopwatch.Stop();
+                var readTimeout = _options.ReadTimeoutMilliseconds;
+                
+                return new RawReadResult
+                {
+                    TimestampUtc = DateTimeOffset.UtcNow,
+                    IsSuccess = false,
+                    ErrorMessage = $"Read operation timed out after {readTimeout} milliseconds",
+                    FunctionCode = (int)_options.FunctionCode,
+                    DurationsMs = (int)stopwatch.ElapsedMilliseconds
+
+                };
+            }
+            
+            stopwatch.Stop();
+            return new RawReadResult
+            {
+                TimestampUtc = DateTimeOffset.UtcNow,
+                IsSuccess = false,
+                ErrorMessage = $"Unknown error",
+                FunctionCode = (int)_options.FunctionCode,
+                DurationsMs = (int)stopwatch.ElapsedMilliseconds
+            };
+        }
+        
         catch (Exception ex)
         {
             stopwatch.Stop();
@@ -82,6 +129,6 @@ public sealed class PlcReaderService : IPlcReader
 
             };
         }
-
+        
     }
 }

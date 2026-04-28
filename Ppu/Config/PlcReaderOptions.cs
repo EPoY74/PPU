@@ -19,4 +19,8 @@ public sealed class PlcReaderOptions
     public ushort RegisterCount { get; init; } = 2;
     [Range(1,86400)]
     public int PollIntervalSeconds { get; init; } = 5;
+    [Range(100, 60000)]
+    public int ConnectTimeoutMilliseconds { get; init; } = 5000;
+    [Range(100, 60000)]
+    public int ReadTimeoutMilliseconds { get;  init; } = 5000;
 }
