@@ -15,7 +15,7 @@ builder.Services.AddOptions<PlcReaderOptions>()
 builder.Services.AddDbContext<PpuDbContext>(
     options => options.UseSqlite(builder.Configuration.GetConnectionString("PpuDb")));
 
-builder.Services.AddScoped<IRawReadReadHistoryWriter, RawReadHistoryWriter>();
+builder.Services.AddScoped<IRawReadHistoryWriter, RawReadHistoryWriter>();
 
 builder.Services.AddSingleton<AppRunContext>();
 builder.Services.AddSingleton<LastReadStore>();

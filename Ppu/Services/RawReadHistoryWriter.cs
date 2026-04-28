@@ -7,7 +7,7 @@ using Ppu.Domain;
 
 namespace Ppu.Services;
 
-public sealed class RawReadHistoryWriter : IRawReadReadHistoryWriter
+public sealed class RawReadHistoryWriter : IRawReadHistoryWriter
 {
     private readonly PpuDbContext _dbContext;
     private readonly AppRunContext _appRunContext;
@@ -25,14 +25,14 @@ public sealed class RawReadHistoryWriter : IRawReadReadHistoryWriter
         var entry = new RawReadHistoryEntry
         {
             AppRunId = _appRunContext.AppRunId,
-            TimeStampUtc = result.TimestampUtc,
+            TimestampUtc = result.TimestampUtc,
             IsSuccess = result.IsSuccess,
             ErrorMessage = result.ErrorMessage,
             FunctionCode = result.FunctionCode,
             StartAddress = 0, // временно
-            RegisterCouunt = (ushort)(result.Registers?.Length ?? 0),
+            RegisterCount = (ushort)(result.Registers?.Length ?? 0),
             RegistersJson = JsonSerializer.Serialize(result.Registers),
-            Duration = result.DurationsMs
+            DurationMs = result.DurationsMs
         };
         
         _dbContext.RawReadHistory.Add(entry);

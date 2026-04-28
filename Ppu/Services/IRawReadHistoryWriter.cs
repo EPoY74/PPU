@@ -2,7 +2,7 @@
 
 namespace Ppu.Services;
 
-public interface IRawReadReadHistoryWriter
+public interface IRawReadHistoryWriter
 {
     Task SaveAsync(RawReadResult result, CancellationToken cancellationToken);    
 }
