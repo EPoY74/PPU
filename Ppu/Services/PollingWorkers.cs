@@ -9,11 +9,13 @@ public sealed class  PollingWorker : BackgroundService
     private readonly LastReadStore _lastReadStore;
     private readonly ILogger<PollingWorker> _logger;
     private readonly PlcReaderOptions _options;
+    private readonly IServiceScopeFactory _scopeFactory;
 
     public PollingWorker(
             IPlcReader plcReader,
             LastReadStore lastReadStore,
             IOptions<PlcReaderOptions> options,
+            IServiceScopeFactory scopeFactory,
             ILogger<PollingWorker> logger
         )
     {
@@ -21,6 +23,7 @@ public sealed class  PollingWorker : BackgroundService
         _lastReadStore = lastReadStore;
         _logger = logger;
         _options = options.Value;
+        _scopeFactory = scopeFactory;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -32,6 +35,9 @@ public sealed class  PollingWorker : BackgroundService
             {
                 var result = await _plcReader.RawReadAsync(stoppingToken);
                 _lastReadStore.Set(result);
+                using var scope = _scopeFactory.CreateScope();
+                var historyWriter = scope.ServiceProvider.GetRequiredService<IRawReadHistoryWriter>();
+                await historyWriter.SaveAsync(result, stoppingToken);
 
                 if (result.IsSuccess)
                 {

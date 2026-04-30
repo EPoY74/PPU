@@ -20,7 +20,7 @@ public sealed class PpuDbContext : DbContext
         entity.Property(x => x.RegistersJson).IsRequired();
         entity.Property(x => x.TimestampUtc).IsRequired();
         
-        entity.HasIndex(x => x.TimestampUtc);
         entity.HasIndex(x => x.AppRunId);
+        entity.HasIndex(x => x.TimestampUtc);
     }
 }
