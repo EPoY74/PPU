@@ -62,9 +62,9 @@ public sealed class  PollingWorker : BackgroundService
             {
                 break;
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                _logger.LogError(Ex, "Unpandled error during PLC read");
+                _logger.LogError(ex, "Unpandled error during PLC read");
             }
             await Task.Delay(
                 TimeSpan.FromSeconds(_options.PollIntervalSeconds),
