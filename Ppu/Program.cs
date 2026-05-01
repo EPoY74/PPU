@@ -36,6 +36,24 @@ builder.Services.AddOpenApi("v1", options =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    using var dbContext = scope.ServiceProvider.GetRequiredService<PpuDbContext>();
+
+    try
+    {
+        dbContext.Database.Migrate();
+        logger.LogInformation("Database migration completed successfully.");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Database migration failed.");
+        throw;
+    }
+}
+
 app.MapOpenApi();
 
 
