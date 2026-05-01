@@ -38,3 +38,7 @@ obj/
 *.nupkg.metadata
 packages/
 **/packages/
+
+*.db
+*.db-shm
+*.db-wal
