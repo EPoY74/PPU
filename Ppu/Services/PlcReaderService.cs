@@ -62,6 +62,7 @@ public sealed class PlcReaderService : IPlcReader
                 IsSuccess = true,
                 ErrorMessage = null,
                 StartAddress = _options.StartAddress,
+                RegisterCount = _options.RegisterCount,
                 Registers = readRegisters.ToArray(),
                 FunctionCode = (int)_options.FunctionCode,
                 DurationsMs = (int)stopwatch.ElapsedMilliseconds
@@ -85,6 +86,7 @@ public sealed class PlcReaderService : IPlcReader
                     TimestampUtc = DateTimeOffset.UtcNow,
                     IsSuccess = false,
                     StartAddress =  _options.StartAddress,
+                    RegisterCount = _options.RegisterCount,
                     ErrorMessage = $"Connection operation timed out after {connectionTimeout} milliseconds",
                     FunctionCode = (int)_options.FunctionCode,
                     DurationsMs = (int)stopwatch.ElapsedMilliseconds
@@ -101,6 +103,7 @@ public sealed class PlcReaderService : IPlcReader
                     TimestampUtc = DateTimeOffset.UtcNow,
                     IsSuccess = false,
                     StartAddress =  _options.StartAddress,
+                    RegisterCount =  _options.RegisterCount,
                     ErrorMessage = $"Read operation timed out after {readTimeout} milliseconds",
                     FunctionCode = (int)_options.FunctionCode,
                     DurationsMs = (int)stopwatch.ElapsedMilliseconds
@@ -114,6 +117,7 @@ public sealed class PlcReaderService : IPlcReader
                 TimestampUtc = DateTimeOffset.UtcNow,
                 IsSuccess = false,
                 StartAddress =  _options.StartAddress,
+                RegisterCount = _options.RegisterCount,
                 ErrorMessage = $"Unknown error",
                 FunctionCode = (int)_options.FunctionCode,
                 DurationsMs = (int)stopwatch.ElapsedMilliseconds
@@ -128,6 +132,7 @@ public sealed class PlcReaderService : IPlcReader
                 TimestampUtc = DateTimeOffset.UtcNow,
                 IsSuccess = false,
                 StartAddress =  _options.StartAddress,
+                RegisterCount = _options.RegisterCount,
                 ErrorMessage = ex.Message,
                 FunctionCode = (int)_options.FunctionCode,
                 DurationsMs = (int)stopwatch.ElapsedMilliseconds
