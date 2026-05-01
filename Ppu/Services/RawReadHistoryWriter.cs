@@ -29,7 +29,7 @@ public sealed class RawReadHistoryWriter : IRawReadHistoryWriter
             IsSuccess = result.IsSuccess,
             ErrorMessage = result.ErrorMessage,
             FunctionCode = result.FunctionCode,
-            StartAddress = 0, // временно
+            StartAddress = result.StartAddress,
             RegisterCount = (ushort)(result.Registers?.Length ?? 0),
             RegistersJson = JsonSerializer.Serialize(result.Registers),
             DurationMs = result.DurationsMs

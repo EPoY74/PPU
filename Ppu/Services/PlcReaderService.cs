@@ -61,6 +61,7 @@ public sealed class PlcReaderService : IPlcReader
                 TimestampUtc = DateTimeOffset.UtcNow,
                 IsSuccess = true,
                 ErrorMessage = null,
+                StartAddress = _options.StartAddress,
                 Registers = readRegisters.ToArray(),
                 FunctionCode = (int)_options.FunctionCode,
                 DurationsMs = (int)stopwatch.ElapsedMilliseconds
@@ -83,6 +84,7 @@ public sealed class PlcReaderService : IPlcReader
                 {
                     TimestampUtc = DateTimeOffset.UtcNow,
                     IsSuccess = false,
+                    StartAddress =  _options.StartAddress,
                     ErrorMessage = $"Connection operation timed out after {connectionTimeout} milliseconds",
                     FunctionCode = (int)_options.FunctionCode,
                     DurationsMs = (int)stopwatch.ElapsedMilliseconds
@@ -98,6 +100,7 @@ public sealed class PlcReaderService : IPlcReader
                 {
                     TimestampUtc = DateTimeOffset.UtcNow,
                     IsSuccess = false,
+                    StartAddress =  _options.StartAddress,
                     ErrorMessage = $"Read operation timed out after {readTimeout} milliseconds",
                     FunctionCode = (int)_options.FunctionCode,
                     DurationsMs = (int)stopwatch.ElapsedMilliseconds
@@ -110,6 +113,7 @@ public sealed class PlcReaderService : IPlcReader
             {
                 TimestampUtc = DateTimeOffset.UtcNow,
                 IsSuccess = false,
+                StartAddress =  _options.StartAddress,
                 ErrorMessage = $"Unknown error",
                 FunctionCode = (int)_options.FunctionCode,
                 DurationsMs = (int)stopwatch.ElapsedMilliseconds
@@ -123,6 +127,7 @@ public sealed class PlcReaderService : IPlcReader
             {
                 TimestampUtc = DateTimeOffset.UtcNow,
                 IsSuccess = false,
+                StartAddress =  _options.StartAddress,
                 ErrorMessage = ex.Message,
                 FunctionCode = (int)_options.FunctionCode,
                 DurationsMs = (int)stopwatch.ElapsedMilliseconds
