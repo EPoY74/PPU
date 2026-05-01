@@ -7,7 +7,7 @@ public sealed class RawReadResult
     public string? ErrorMessage { get; init; }
     public ushort StartAddress { get; init; }
     public ushort RegisterCount  { get; init; } 
-    public int FunctionCode { get; init; } = (int)ModbusFunctionCode.ReadHoldingRegisters;
+    public int FunctionCode { get; init; }
     public ushort[] Registers { get; init; } = [];  //Array.Empty<ushort>();
     public int DurationsMs { get; init; }
 
