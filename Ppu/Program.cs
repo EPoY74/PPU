@@ -78,7 +78,8 @@ app.MapGet("/", (HttpRequest request) =>
         Endpoints: new EndpointLinksDto(
             $"{baseUrl}/health",
             $"{baseUrl}/last-read",
-            $"{baseUrl}/openapi/v1.json"
+            $"{baseUrl}/openapi/v1.json",
+            $"{baseUrl}/history"
         )
     );
     return Results.Ok(rootResponse);
