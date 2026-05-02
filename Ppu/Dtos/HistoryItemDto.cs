@@ -3,7 +3,7 @@
 public sealed record HistoryItemDto(
     long Id,
     Guid AppRunId,
-    DateTimeOffset TimestampUtc,
+    DateTime TimestampUtc,
     bool IsSuccess,
     string? ErrorMessage,
     ushort FunctionCode,

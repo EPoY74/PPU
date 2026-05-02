@@ -2,7 +2,7 @@ namespace Ppu.Domain;
 
 public sealed class RawReadResult
 {
-    public required DateTimeOffset TimestampUtc { get; init; }
+    public required DateTime TimestampUtc { get; init; }
     public required bool IsSuccess { get; init; }
     public string? ErrorMessage { get; init; }
     public required ushort StartAddress { get; init; }

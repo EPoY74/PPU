@@ -6,7 +6,7 @@ public sealed class RawReadHistoryEntry
 {
     public long Id { get; set; }
     public Guid AppRunId { get; set; }
-    public DateTimeOffset TimestampUtc { get; set; }
+    public DateTime TimestampUtc { get; set; }
     public bool IsSuccess { get; set; }
     [StringLength(512)]
     public string? ErrorMessage {  get; set; }

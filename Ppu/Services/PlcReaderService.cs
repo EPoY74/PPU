@@ -58,7 +58,7 @@ public sealed class PlcReaderService : IPlcReader
             stopwatch.Stop();
             return new RawReadResult
             {
-                TimestampUtc = DateTimeOffset.UtcNow,
+                TimestampUtc = DateTime.UtcNow,
                 IsSuccess = true,
                 ErrorMessage = null,
                 StartAddress = _options.StartAddress,
@@ -83,7 +83,7 @@ public sealed class PlcReaderService : IPlcReader
 
                 return new RawReadResult
                 {
-                    TimestampUtc = DateTimeOffset.UtcNow,
+                    TimestampUtc = DateTime.UtcNow,
                     IsSuccess = false,
                     StartAddress =  _options.StartAddress,
                     RegisterCount = _options.RegisterCount,
@@ -101,7 +101,7 @@ public sealed class PlcReaderService : IPlcReader
                 
                 return new RawReadResult
                 {
-                    TimestampUtc = DateTimeOffset.UtcNow,
+                    TimestampUtc = DateTime.UtcNow,
                     IsSuccess = false,
                     StartAddress =  _options.StartAddress,
                     RegisterCount =  _options.RegisterCount,
@@ -116,7 +116,7 @@ public sealed class PlcReaderService : IPlcReader
             stopwatch.Stop();
             return new RawReadResult
             {
-                TimestampUtc = DateTimeOffset.UtcNow,
+                TimestampUtc = DateTime.UtcNow,
                 IsSuccess = false,
                 StartAddress =  _options.StartAddress,
                 RegisterCount = _options.RegisterCount,
@@ -132,7 +132,7 @@ public sealed class PlcReaderService : IPlcReader
             stopwatch.Stop();
             return new RawReadResult
             {
-                TimestampUtc = DateTimeOffset.UtcNow,
+                TimestampUtc = DateTime.UtcNow,
                 IsSuccess = false,
                 StartAddress =  _options.StartAddress,
                 RegisterCount = _options.RegisterCount,
