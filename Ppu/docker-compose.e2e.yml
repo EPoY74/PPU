@@ -1,0 +1,36 @@
+services:
+  ppu-simulator:
+    build:
+      context: ../..
+      dockerfile: PPU/Ppu/docker/simulator.Dockerfile
+    command:
+      - --config
+      - /app/config/simulator-static.json
+    volumes:
+      - ./docker/e2e/simulator-static.json:/app/config/simulator-static.json:ro
+    expose:
+      - "1502"
+
+  ppu-api:
+    build:
+      context: .
+      dockerfile: docker/ppu.Dockerfile
+    depends_on:
+      - ppu-simulator
+    environment:
+      ASPNETCORE_ENVIRONMENT: E2E
+      HttpServer__Scheme: http
+      HttpServer__Host: 0.0.0.0
+      HttpServer__Port: 5055
+      ConnectionStrings__PpuDb: Data Source=/app/data/ppu-e2e.db
+      PlcReader__Host: ppu-simulator
+      PlcReader__Port: 1502
+      PlcReader__UnitId: 1
+      PlcReader__FunctionCode: 4
+      PlcReader__StartAddress: 0
+      PlcReader__RegisterCount: 4
+      PlcReader__PollIntervalSeconds: 1
+      PlcReader__ConnectTimeoutMilliseconds: 1000
+      PlcReader__ReadTimeoutMilliseconds: 1000
+    ports:
+      - "5055:5055"
