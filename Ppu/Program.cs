@@ -72,7 +72,7 @@ app.MapGet("/", (HttpRequest request) =>
     var baseUrl = $"{request.Scheme}://{request.Host}";
     var rootResponse = new RootResponseDto(
         Application: "PPU",
-        Version: "0.1.1",
+        Version: "0.2.0",
         Status: "Running",
         Description: "Simple modbus TCP PLC polling utility with HTTP API.",
         Endpoints: new EndpointLinksDto(
@@ -149,7 +149,8 @@ app.MapGet("/history", async (PpuDbContext dbContext) =>
         return Results.Ok(items);
     })
     .WithSummary("Get 20 latest raw read history")
-    .WithDescription("Returns the 20 latest raw PLC read records from SQLite history storage.");
+    .WithDescription("Returns the 20 latest raw PLC read records from SQLite history storage.")
+    .Produces<List<HistoryItemDto>>(StatusCodes.Status200OK);
 
 
 app.Run();
