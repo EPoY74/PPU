@@ -104,26 +104,51 @@ app.MapGet("/health", () =>
 
 
 app.MapGet("/last-read", (LastReadStore store) =>
-{
-    var result = store.Get();
-    if (result is null)
     {
-        return Results.NotFound(new DataReadErrorDto("No read yet."));
-    }
-    return Results.Ok(new LastReadResponseDto(
-        result.TimestampUtc,
-        result.IsSuccess,
-        result.ErrorMessage,
-        result.FunctionCode,
-        result.Registers,
-        result.DurationsMs
-    ));
-})
-.WithSummary("Get last PLC read result")
-.WithDescription("Returns the latest read result stored in memory.")
-// ReSharper disable once RedundantArgumentDefaultValue
-.Produces<LastReadResponseDto>(StatusCodes.Status200OK) 
-.Produces<DataReadErrorDto>(StatusCodes.Status404NotFound);
+        var result = store.Get();
+        if (result is null)
+        {
+            return Results.NotFound(new DataReadErrorDto("No read yet."));
+        }
+
+        return Results.Ok(new LastReadResponseDto(
+            result.TimestampUtc,
+            result.IsSuccess,
+            result.ErrorMessage,
+            result.FunctionCode,
+            result.Registers,
+            result.DurationsMs
+        ));
+    })
+    .WithSummary("Get last PLC read result")
+    .WithDescription("Returns the latest read result stored in memory.")
+    // ReSharper disable once RedundantArgumentDefaultValue
+    .Produces<LastReadResponseDto>(StatusCodes.Status200OK)
+    .Produces<DataReadErrorDto>(StatusCodes.Status404NotFound);
+
+app.MapGet("/history", async (PpuDbContext dbContext) =>
+    {
+        var items = await dbContext.RawReadHistory
+            .OrderByDescending(x => x.TimestampUtc)
+            .Take(20)
+            .Select(x => new HistoryItemDto(
+                x.Id,
+                x.AppRunId,
+                x.TimestampUtc,
+                x.IsSuccess,
+                x.ErrorMessage,
+                (ushort)x.FunctionCode,
+                x.StartAddress,
+                x.RegisterCount,
+                x.RegistersJson,
+                x.DurationMs
+            ))
+            .ToListAsync();
+
+        return Results.Ok(items);
+    })
+    .WithSummary("Get 20 latest raw read history")
+    .WithDescription("Returns the 20 latest raw PLC read records from SQLite history storage.");
 
 
 app.Run();
