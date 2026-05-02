@@ -6,6 +6,9 @@ using Ppu.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddOptions<HttpServerOptions>()
+    .Bind(builder.Configuration.GetSection("HttpServer"))
+    .ValidateOnStart();
 
 builder.Services.AddOptions<PlcReaderOptions>()
     .Bind(builder.Configuration.GetSection("PlcReader"))
