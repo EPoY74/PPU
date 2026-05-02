@@ -10,6 +10,13 @@ builder.Services.AddOptions<HttpServerOptions>()
     .Bind(builder.Configuration.GetSection("HttpServer"))
     .ValidateOnStart();
 
+var httpServerOptions = builder.Configuration
+                            .GetSection("HttpServer")
+                            .Get<HttpServerOptions>()
+                        ?? throw new InvalidOperationException("HttpServer configuration is missing.");
+
+builder.WebHost.UseUrls($"https://{httpServerOptions.Host}:{httpServerOptions.Port}");
+
 builder.Services.AddOptions<PlcReaderOptions>()
     .Bind(builder.Configuration.GetSection("PlcReader"))
     .ValidateDataAnnotations()
@@ -60,17 +67,18 @@ using (var scope = app.Services.CreateScope())
 app.MapOpenApi();
 
 
-app.MapGet("/", static () =>
+app.MapGet("/", (HttpRequest request) =>
 {
+    var baseUrl = $"{request.Scheme}://{request.Host}";
     var rootResponse = new RootResponseDto(
         Application: "PPU",
         Version: "0.1.1",
         Status: "Running",
         Description: "Simple modbus TCP PLC polling utility with HTTP API.",
         Endpoints: new EndpointLinksDto(
-            "/health",
-            "/last-read",
-            "/openapi/v1.json"
+            $"{baseUrl}/health",
+            $"{baseUrl}/last-read",
+            $"{baseUrl}/openapi/v1.json"
         )
     );
     return Results.Ok(rootResponse);
