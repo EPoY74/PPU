@@ -78,7 +78,8 @@ app.MapGet("/", (HttpRequest request) =>
         Endpoints: new EndpointLinksDto(
             $"{baseUrl}/health",
             $"{baseUrl}/last-read",
-            $"{baseUrl}/openapi/v1.json"
+            $"{baseUrl}/openapi/v1.json",
+            $"{baseUrl}/history"
         )
     );
     return Results.Ok(rootResponse);
@@ -125,6 +126,31 @@ app.MapGet("/last-read", (LastReadStore store) =>
 .Produces<LastReadResponseDto>(StatusCodes.Status200OK) 
 .Produces<DataReadErrorDto>(StatusCodes.Status404NotFound);
 
+app.MapGet("/history", async (PpuDbContext dbContext) =>
+{
+    var entries = await dbContext.RawReadHistory
+        .AsNoTracking()
+        .OrderByDescending(x => x.Id)
+        .Take(20)
+        .ToListAsync();
+
+    var items = entries.Select(x => new HistoryItemDto(
+        x.Id,
+        x.AppRunId,
+        x.TimestampUtc,
+        x.IsSuccess,
+        x.ErrorMessage,
+        (ushort)x.FunctionCode,
+        x.StartAddress,
+        x.RegisterCount,
+        x.RegistersJson,
+        x.DurationMs
+    ));
+
+    return Results.Ok(items);
+})
+.WithSummary("Get latest raw read history")
+.WithDescription("Returns the latest raw PLC read records from SQLite history storage.");
 
 app.Run();
 

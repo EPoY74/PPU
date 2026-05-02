@@ -60,6 +60,7 @@ The current E2E tests verify:
 - `/` returns service metadata and endpoint links.
 - `/openapi/v1.json` is published.
 - `/last-read` eventually returns FC04 input registers from the Dockerized PLC simulator.
+- `/history` returns persisted raw read records from SQLite.
 
 ## Important files
 
@@ -75,9 +76,9 @@ The current E2E tests verify:
 Successful output should include:
 
 ```text
-Passed: 4
+Passed: 5
 Failed: 0
-Total: 4
+Total: 5
 ```
 
 ## Troubleshooting
