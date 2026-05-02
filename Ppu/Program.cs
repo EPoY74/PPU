@@ -15,7 +15,7 @@ var httpServerOptions = builder.Configuration
                             .Get<HttpServerOptions>()
                         ?? throw new InvalidOperationException("HttpServer configuration is missing.");
 
-builder.WebHost.UseUrls($"https://{httpServerOptions.Host}:{httpServerOptions.Port}");
+builder.WebHost.UseUrls($"{httpServerOptions.Scheme}://{httpServerOptions.Host}:{httpServerOptions.Port}");
 
 builder.Services.AddOptions<PlcReaderOptions>()
     .Bind(builder.Configuration.GetSection("PlcReader"))
